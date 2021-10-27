@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("visit_localhost", () => {
-  cy.visit("http://localhost:8888/");
+  cy.visit("http://localhost:3000/");
 });
 
 Cypress.Commands.add("get_muilist_list_item", (index) => {

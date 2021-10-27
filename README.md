@@ -1,6 +1,6 @@
 ## Installing
 
 * `npm install`
-* Then run `netlify dev`
+* Then run `npm run dev`
 * Cypress tests can be launched with `npm run e2e`
 
