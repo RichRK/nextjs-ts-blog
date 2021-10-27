@@ -95,9 +95,12 @@ const Index = ({ allPosts }: Props) => {
             handleChange={handleChange}
             selectedAnimal={selectedAnimal}
           />
+          <div className="animalContainer">
           {sponsoredAnimals.map((animal, i) => {
             return <Animal animal={animal} key={i} />;
           })}
+          </div>
+          
           {sponsoredAnimals.length > 0 && (
             <Button
               className="mt-5 mb-9"

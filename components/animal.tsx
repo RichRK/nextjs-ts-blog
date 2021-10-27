@@ -8,8 +8,7 @@ type Props = {
 const Animal = ({ animal }: Props) => {
   return (
     <p className="mb-2">
-      {animal.name}
-      {animal.emoji}
+      {animal.name + ' ' + animal.emoji}
     </p>
   );
 };
