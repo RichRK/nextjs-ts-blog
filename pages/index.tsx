@@ -1,20 +1,70 @@
-import Container from '../components/container'
-import MoreStories from '../components/more-stories'
-import HeroPost from '../components/hero-post'
-import Intro from '../components/intro'
-import Layout from '../components/layout'
-import { getAllPosts } from '../lib/api'
-import Head from 'next/head'
-import { CMS_NAME } from '../lib/constants'
-import Post from '../types/post'
+import Container from "../components/container";
+import MoreStories from "../components/more-stories";
+import HeroPost from "../components/hero-post";
+import Intro from "../components/intro";
+import Layout from "../components/layout";
+import { getAllPosts } from "../lib/api";
+import Head from "next/head";
+import { CMS_NAME } from "../lib/constants";
+import Post from "../types/post";
+import PickAnAnimal from "../components/pick-an-animal";
+import { useEffect, useState } from "react";
+import Animal from "../components/animal";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 type Props = {
-  allPosts: Post[]
-}
+  allPosts: Post[];
+};
 
 const Index = ({ allPosts }: Props) => {
-  const heroPost = allPosts[0]
-  const morePosts = allPosts.slice(1)
+  const animals = [
+    { name: "Turtle", emoji: "🐢" },
+    { name: "Giraffe", emoji: "🦒" },
+    { name: "Lion", emoji: "🦁" },
+    { name: "Shark", emoji: "🦈" },
+    { name: "Zebra", emoji: "🦓" },
+    { name: "Gorilla", emoji: "🦍" },
+    { name: "Peacock", emoji: "🦚" },
+    { name: "Frog", emoji: "🐸" },
+    { name: "Dog", emoji: "🐶" },
+    { name: "Elephant", emoji: "🐘" },
+    { name: "Bear", emoji: "🐻" },
+  ];
+
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [selectedAnimal, setSelectedAnimal] = useState(animals[0]);
+  const [sponsoredAnimals, setSponsoredAnimals] = useState([]);
+
+  const heroPost = allPosts[0];
+  const morePosts = allPosts.slice(1);
+
+  const addAnimal = (): void => {
+    if (!sponsoredAnimals.includes(selectedAnimal)) {
+      setSponsoredAnimals([...sponsoredAnimals, selectedAnimal]);
+      setIsErrorOpen(false);
+    } else {
+      setIsErrorOpen(true);
+    }
+  };
+
+  const clearAnimals = (): void => {
+    setSponsoredAnimals([]);
+  };
+
+  const handleChange = (event: Event) => {
+    let animal = animals.filter((x) => x.name === event.target.value);
+    setSelectedAnimal(animal[0]);
+  };
+
+  const handleClose = (event: Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsErrorOpen(false);
+  };
+
   return (
     <>
       <Layout>
@@ -22,7 +72,41 @@ const Index = ({ allPosts }: Props) => {
           <title>Next.js Blog Example with {CMS_NAME}</title>
         </Head>
         <Container>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            open={isErrorOpen}
+            severity="error"
+          >
+            <Alert
+              icon={false}
+              onClose={handleClose}
+              severity="warning"
+              variant="filled"
+            >
+              They're already in your sponsor list!
+            </Alert>
+          </Snackbar>
           <Intro />
+          <PickAnAnimal
+            addAnimal={addAnimal}
+            animals={animals}
+            handleChange={handleChange}
+            selectedAnimal={selectedAnimal}
+          />
+          {sponsoredAnimals.map((animal, i) => {
+            return <Animal animal={animal} key={i} />;
+          })}
+          {sponsoredAnimals.length > 0 && (
+            <Button
+              className="mt-5 mb-9"
+              onClick={clearAnimals}
+              variant="outlined"
+            >
+              Clear all
+            </Button>
+          )}
           {heroPost && (
             <HeroPost
               title={heroPost.title}
@@ -37,22 +121,22 @@ const Index = ({ allPosts }: Props) => {
         </Container>
       </Layout>
     </>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;
 
 export const getStaticProps = async () => {
   const allPosts = getAllPosts([
-    'title',
-    'date',
-    'slug',
-    'author',
-    'coverImage',
-    'excerpt',
-  ])
+    "title",
+    "date",
+    "slug",
+    "author",
+    "coverImage",
+    "excerpt",
+  ]);
 
   return {
     props: { allPosts },
-  }
-}
+  };
+};
