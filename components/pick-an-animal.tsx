@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEventHandler } from "react";
 import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
+import Select, {SelectChangeEvent} from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import cn from "classnames";
 
+type Animal = {
+  name: string
+  emoji: string
+}
+
 type Props = {
-  addAnimal: Function;
-  animals: {
-    name: string;
-    emoji: string;
-  }[];
-  handleChange: Function;
-  selectedAnimal: string;
+  addAnimal: any
+  animals: Animal[]
+  handleChange: any
+  selectedAnimal: Animal
 };
 
 const PickAnAnimal = ({
@@ -61,7 +63,7 @@ const PickAnAnimal = ({
       <Button onClick={addAnimal} variant="contained">
         Add
       </Button>
-      {photo && <img alt={photo.alt_description} src={photo.urls.regular} />}
+      {/* {photo && <img alt={photo.alt_description} src={photo.urls.regular} />} */}
     </div>
   );
 };

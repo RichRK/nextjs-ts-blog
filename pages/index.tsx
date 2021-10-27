@@ -8,18 +8,26 @@ import Head from "next/head";
 import { CMS_NAME } from "../lib/constants";
 import Post from "../types/post";
 import PickAnAnimal from "../components/pick-an-animal";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Animal from "../components/animal";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { SelectChangeEvent } from "@mui/material/Select";
+
+type Animal = {
+  name: string
+  emoji: string
+}
 
 type Props = {
   allPosts: Post[];
 };
 
 const Index = ({ allPosts }: Props) => {
-  const animals = [
+
+  const emptyAnimalArray: Animal[] = [];
+  const animals: Animal[] = [
     { name: "Turtle", emoji: "🐢" },
     { name: "Giraffe", emoji: "🦒" },
     { name: "Lion", emoji: "🦁" },
@@ -35,7 +43,7 @@ const Index = ({ allPosts }: Props) => {
 
   const [isErrorOpen, setIsErrorOpen] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState(animals[0]);
-  const [sponsoredAnimals, setSponsoredAnimals] = useState([]);
+  const [sponsoredAnimals, setSponsoredAnimals] = useState(emptyAnimalArray);
 
   const heroPost = allPosts[0];
   const morePosts = allPosts.slice(1);
@@ -53,12 +61,12 @@ const Index = ({ allPosts }: Props) => {
     setSponsoredAnimals([]);
   };
 
-  const handleChange = (event: Event) => {
-    let animal = animals.filter((x) => x.name === event.target.value);
+  const handleChange = (event: SelectChangeEvent) => {
+    let animal = animals.filter((x) => x.name === event.target.value ?? '');
     setSelectedAnimal(animal[0]);
   };
 
-  const handleClose = (event: Event, reason?: string) => {
+  const handleClose = (event: SyntheticEvent, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -77,7 +85,6 @@ const Index = ({ allPosts }: Props) => {
             autoHideDuration={5000}
             onClose={handleClose}
             open={isErrorOpen}
-            severity="error"
           >
             <Alert
               icon={false}
@@ -100,7 +107,6 @@ const Index = ({ allPosts }: Props) => {
             return <Animal animal={animal} key={i} />;
           })}
           </div>
-          
           {sponsoredAnimals.length > 0 && (
             <Button
               className="mt-5 mb-9"
